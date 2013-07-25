@@ -48,11 +48,14 @@ table#movies th, table#movies td {
   padding: 4px;
   text-align: left;
 }
+<<<<<<< HEAD
 table#movies th.hilite {
   background-color: yellow;
 }
 
 
+=======
+>>>>>>> 925548a5610cd02689ed498ab7a81a866ce563ec
 #notice #warning {
   background: rosybrown;
   margin: 1em 0;
