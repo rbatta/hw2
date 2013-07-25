@@ -17,9 +17,10 @@ class MoviesController < ApplicationController
     #else
     #  @movies = Movie.all
     #end
+    #another comment line
 
     @movies = Movie.order(params[:sort_by])
-    
+
   end
 
   def new
