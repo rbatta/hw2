@@ -7,7 +7,6 @@ class MoviesController < ApplicationController
   end
 
   def index
-<<<<<<< HEAD
     # @movies = Movie.all
     
     # this theoretically works but didn't work for me
@@ -18,13 +17,9 @@ class MoviesController < ApplicationController
     #else
     #  @movies = Movie.all
     #end
-    #another comment line
 
     @movies = Movie.order(params[:sort_by])
 
-=======
-    @movies = Movie.all
->>>>>>> 925548a5610cd02689ed498ab7a81a866ce563ec
   end
 
   def new
