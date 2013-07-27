@@ -20,6 +20,7 @@ class MoviesController < ApplicationController
 
     @movies = Movie.order(params[:sort_by])
     @all_ratings = Movie.all_ratings
+    # @movies = Movie.find(params[:ratings].each_key) 
 
   end
 

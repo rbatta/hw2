@@ -1,7 +1,7 @@
 class Movie < ActiveRecord::Base
 
 	def self.all_ratings
-		ratings = Movie.select(:rating).map(&:rating).uniq.sort
+		ratings = Movie.select('rating').collect(&:rating).uniq.sort
 		# .select(:rating) chooses ratings from movies (returns list of them)
 		# .map(&:rating) maps out each rating into an array
 		#    basically .each { |r| r.rating}
