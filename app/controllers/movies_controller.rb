@@ -20,7 +20,16 @@ class MoviesController < ApplicationController
 
     @movies = Movie.order(params[:sort_by])
     @all_ratings = Movie.all_ratings
-    # @movies = Movie.find(params[:ratings].each_key) 
+    
+    # if user selects some movie ratings and hits refresh, run this code
+    # else black refresh
+
+    #@checked_box = params[:ratings] # should return hash of ratings chosen
+    #@checked_box.map do
+    #  |x| Movie.where("rating = ?", x)
+    #end
+
+    #movie.find_all_by_rating('G') also works
 
   end
 
