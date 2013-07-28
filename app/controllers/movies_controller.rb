@@ -17,10 +17,27 @@ class MoviesController < ApplicationController
     #else
     #  @movies = Movie.all
     #end
-
-    @movies = Movie.order(params[:sort_by])
-    @all_ratings = Movie.all_ratings
     
+    debugger
+    @all_ratings = Movie.all_ratings
+    # checked_box = params[:rating]
+
+    if params[:commit] == "Refresh"
+      checked_box = params[:ratings]  # params[:ratings] is a hash!
+      checked_box.map do |x,y|
+        @all_ratings = Movie.all_ratings
+        Movie.find_all_by_rating(x)
+          # i am refreshing the movies list so only the last key gets displayed
+          # need to concatenate the x's together and then display them all at once rather than individually
+
+        # x.rating = checked_box.include?(x)
+      end
+      
+    else
+      @movies = Movie.order(params[:sort_by])
+    end
+
+
     # if user selects some movie ratings and hits refresh, run this code
     # else black refresh
 
