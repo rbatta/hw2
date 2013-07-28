@@ -18,20 +18,17 @@ class MoviesController < ApplicationController
     #  @movies = Movie.all
     #end
     
-    debugger
     @all_ratings = Movie.all_ratings
     # checked_box = params[:rating]
-
+    
     if params[:commit] == "Refresh"
       checked_box = params[:ratings]  # params[:ratings] is a hash!
+      arr = []
       checked_box.map do |x,y|
-        @all_ratings = Movie.all_ratings
-        Movie.find_all_by_rating(x)
-          # i am refreshing the movies list so only the last key gets displayed
-          # need to concatenate the x's together and then display them all at once rather than individually
-
-        # x.rating = checked_box.include?(x)
+        arr << Movie.find_all_by_rating(x)    # this returns an array of arrays (however many i've chosen)
       end
+      @all_ratings = Movie.all_ratings
+      @movies = arr.flatten                   # @movies only works on 1D array so need to flatten arr to 1D
       
     else
       @movies = Movie.order(params[:sort_by])
