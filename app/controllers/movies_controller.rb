@@ -19,19 +19,21 @@ class MoviesController < ApplicationController
     #end
     
     @all_ratings = Movie.all_ratings
-    # checked_box = params[:rating]
+    @ratings_hash = { "G" => false, "PG" => false, "PG-13" => false, "R" => false }
+    # if( nothing set ) { set all true } else { do mapping }
     
     if params[:commit] == "Refresh"
-      checked_box = params[:ratings]  # params[:ratings] is a hash!
+      @checked_box = params[:ratings]  # params[:ratings] is a hash!
       arr = []
-      checked_box.map do |x,y|
+      @checked_box.map do |x,y|      # { "G" => 1, "PG" => 1}
         arr << Movie.find_all_by_rating(x)    # this returns an array of arrays (however many i've chosen)
+        @ratings_hash[x] = true
       end
       @all_ratings = Movie.all_ratings
       @movies = arr.flatten                   # @movies only works on 1D array so need to flatten arr to 1D
-      
     else
       @movies = Movie.order(params[:sort_by])
+      @ratings_hash = { "G" => true, "PG" => true, "PG-13" => true, "R" => true }
     end
 
 
