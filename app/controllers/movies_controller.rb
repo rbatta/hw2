@@ -9,24 +9,17 @@ class MoviesController < ApplicationController
   def index
     # @movies = Movie.all
     
-    # this theoretically works but didn't work for me
-    #if params[:sort_by] == "title"
-    #  @movies = Movies.order('title ASC')
-    #elsif params[:sort_by] == "release_date"
-    #  @movies = Movies.order('release_date ASC')
-    #else
-    #  @movies = Movie.all
-    #end
-    
     @all_ratings = Movie.all_ratings
     @ratings_hash = { "G" => false, "PG" => false, "PG-13" => false, "R" => false }
     # if( nothing set ) { set all true } else { do mapping }
     
     arr = []
-
+    debugger
     if params[:sort_by] || params[:ratings]
+      session[:sort_by] = params[:sort_by]
+      session[:ratings] = params[:ratings]
       if !params[:ratings]      # because sort_by by itself has no params[ratings] to pass thru
-        @movies = Movie.order(params[:sort_by])
+        @movies = Movie.order(session[:sort_by])
         @ratings_hash = { "G" => true, "PG" => true, "PG-13" => true, "R" => true }
       else
         params[:ratings].map do |x,y|      # eg. { "G" => 1, "PG" => 1}
