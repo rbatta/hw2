@@ -15,10 +15,10 @@ class MoviesController < ApplicationController
     
     arr = []
     
-    session[:sort_by] = params[:sort_by]
-    session[:ratings] = params[:ratings]
-
+    
     if params[:sort_by] || params[:ratings]
+      session[:sort_by] = params[:sort_by]
+      session[:ratings] = params[:ratings]
 
       if !params[:ratings]      # because sort_by by itself has no params[ratings] to pass thru
         @movies = Movie.order(session[:sort_by])
