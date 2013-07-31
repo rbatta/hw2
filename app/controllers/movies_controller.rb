@@ -14,23 +14,25 @@ class MoviesController < ApplicationController
     # if( nothing set ) { set all true } else { do mapping }
     
     arr = []
-    debugger
+    
+    session[:sort_by] = params[:sort_by]
+    session[:ratings] = params[:ratings]
+
     if params[:sort_by] || params[:ratings]
-      session[:sort_by] = params[:sort_by]
-      session[:ratings] = params[:ratings]
+
       if !params[:ratings]      # because sort_by by itself has no params[ratings] to pass thru
         @movies = Movie.order(session[:sort_by])
         @ratings_hash = { "G" => true, "PG" => true, "PG-13" => true, "R" => true }
       else
         params[:ratings].map do |x,y|      # eg. { "G" => 1, "PG" => 1}
-          arr << Movie.order(params[:sort_by]).where('rating = ?', x)   # this returns an array of arrays (however many i've chosen)
+          arr << Movie.order(session[:sort_by]).where('rating = ?', x)   # this returns an array of arrays (however many i've chosen)
           @ratings_hash[x] = true
         end
         @all_ratings = Movie.all_ratings
         @movies = arr.flatten
       end
     else
-      @movies = Movie.order(params[:sort_by])
+      @movies = Movie.order(session[:sort_by])
       @ratings_hash = { "G" => true, "PG" => true, "PG-13" => true, "R" => true }
       
     end
