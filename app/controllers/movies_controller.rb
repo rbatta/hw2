@@ -28,40 +28,40 @@ class MoviesController < ApplicationController
 if params sort
   sort list
   session = param sort
-if params sort == nil
+if params sort == nil && params ratings == nil
   use session and redirect
 
 if params ratings
   filter ratings
   session = params ratings
-if params ratings == nil
-  use session and redirect
- 
+=end 
     #if !session[:sort_by] && !session[:ratings]
     #  @movies = Movie.all 
     #end
     debugger
-    if params[:sort_by]
-      @movies = Movie.order(params[:sort_by])
-      session[:sort_by] = params[:sort_by]
-      @ratings_hash.update(@ratings_hash) { |x, y| y = true }
-    elsif !params[:sort_by] && session[:sort_by]
-      redirect_to movies_path(:sort_by => session[:sort_by])
-    else
-      @movies = Movie.all 
-      @ratings_hash.update(@ratings_hash) { |x, y| y = true }
-    end
-
-    if params[:ratings]
+    if params[:sort_by] && params[:ratings]
       @movies = Movie.where("rating = '#{p_rat.join("' OR rating = '")}'").order(params[:sort_by])
       p_rat.each { |x| @ratings_hash[x] = true }
       session[:ratings] = params[:ratings]
-    else
+      session[:sort_by] = params[:sort_by]
+    elsif params[:sort_by]
+      @movies = Movie.order(params[:sort_by])
+      session[:sort_by] = params[:sort_by]
+      @ratings_hash.update(@ratings_hash) { |x, y| y = true }
+      # redirect_to movies_path(:ratings => session[:ratings], :sort_by => session[:sort_by])
+    elsif params[:ratings]
+      @movies = Movie.where("rating = '#{p_rat.join("' OR rating = '")}'").order(params[:sort_by])
+      p_rat.each { |x| @ratings_hash[x] = true }
+      session[:ratings] = params[:ratings]
+    elsif !params[:ratings] && !params[:sort_by]
       redirect_to movies_path(:ratings => session[:ratings], :sort_by => session[:sort_by])
+    else #everything should be nil
+      @movies = Movie.all 
+      @ratings_hash.update(@ratings_hash) { |x, y| y = true }
     end
+# redirect_to movies_path can only happen 1x in index method
 
-=end
-
+=begin
     if params[:sort_by] && params[:ratings]
       @movies = Movie.where("rating = '#{p_rat.join("' OR rating = '")}'").order(params[:sort_by])
       p_rat.each { |x| @ratings_hash[x] = true }
@@ -92,7 +92,7 @@ if params ratings == nil
       session.delete(:sort_by)
 
     end
-
+=end
     
   end
 
