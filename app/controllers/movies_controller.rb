@@ -11,32 +11,57 @@ class MoviesController < ApplicationController
     
     @all_ratings = Movie.all_ratings
     @ratings_hash = { "G" => false, "PG" => false, "PG-13" => false, "R" => false }
-    # if( nothing set ) { set all true } else { do mapping }
-     
-=begin
-  
-if params has no rating or sorting and session is not nil
-    use the session variable to set parameters
-    and load
-if params has no ratings but does have sort_by (session gets overriden)
-    view sorted movies 
-    update session[:sort_by] variable
-if params has no sorting but does have ratings
-    view filtered movies
-    set session[:ratings]
-if both params have values
-    view filtered AND sorted
-    set session[:ratings] and session[:sort_by]
-if params has nothing and session has nothing
-    view all movies (load all)
-  
-=end
     p_rat = []
     s_rat = []
     p_rat = params[:ratings].map { |x,y| x } if params[:ratings]
     s_rat = session[:ratings].map { |x,y| x } if session[:ratings]
+    
+    # if( nothing set ) { set all true } else { do mapping }
+     
+=begin
+  
+1st load
+  if sessions have keys has_key?(key) T/F
+    redirect to loading by sessions
+  else, load all
 
+if params sort
+  sort list
+  session = param sort
+if params sort == nil
+  use session and redirect
+
+if params ratings
+  filter ratings
+  session = params ratings
+if params ratings == nil
+  use session and redirect
+ 
+    #if !session[:sort_by] && !session[:ratings]
+    #  @movies = Movie.all 
+    #end
     debugger
+    if params[:sort_by]
+      @movies = Movie.order(params[:sort_by])
+      session[:sort_by] = params[:sort_by]
+      @ratings_hash.update(@ratings_hash) { |x, y| y = true }
+    elsif !params[:sort_by] && session[:sort_by]
+      redirect_to movies_path(:sort_by => session[:sort_by])
+    else
+      @movies = Movie.all 
+      @ratings_hash.update(@ratings_hash) { |x, y| y = true }
+    end
+
+    if params[:ratings]
+      @movies = Movie.where("rating = '#{p_rat.join("' OR rating = '")}'").order(params[:sort_by])
+      p_rat.each { |x| @ratings_hash[x] = true }
+      session[:ratings] = params[:ratings]
+    else
+      redirect_to movies_path(:ratings => session[:ratings], :sort_by => session[:sort_by])
+    end
+
+=end
+
     if params[:sort_by] && params[:ratings]
       @movies = Movie.where("rating = '#{p_rat.join("' OR rating = '")}'").order(params[:sort_by])
       p_rat.each { |x| @ratings_hash[x] = true }
@@ -53,19 +78,21 @@ if params has nothing and session has nothing
       end
 
     elsif params[:sort_by]
-      redirect_to movies_path(:sort_by => params[:sort_by])
-      # @movies = Movie.order(params[:sort_by])
+      #redirect_to movies_path(:sort_by => params[:sort_by])
+      @movies = Movie.order(params[:sort_by])
       @ratings_hash.update(@ratings_hash) { |x, y| y = true }
       session[:sort_by] = params[:sort_by]
       session.delete(:ratings)
 
     else
+      # redirect_to movies_path(:ratings => params[:ratings])
       @movies = Movie.where("rating = '#{p_rat.join("' OR rating = '")}'").order(params[:sort_by])
       p_rat.each { |x| @ratings_hash[x] = true }
       session[:ratings] = params[:ratings]
       session.delete(:sort_by)
 
     end
+
     
   end
 
