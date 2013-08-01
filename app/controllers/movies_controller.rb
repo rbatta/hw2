@@ -39,7 +39,7 @@ if params ratings
     #  @movies = Movie.all 
     #end
     debugger
-    
+
     if params[:sort_by] && params[:ratings]
       @movies = Movie.where("rating = '#{p_rat.join("' OR rating = '")}'").order(params[:sort_by])
       p_rat.each { |x| @ratings_hash[x] = true }
@@ -49,11 +49,13 @@ if params ratings
       @movies = Movie.order(params[:sort_by])
       session[:sort_by] = params[:sort_by]
       @ratings_hash.update(@ratings_hash) { |x, y| y = true }
+      session.delete(:rating)
       # redirect_to movies_path(:ratings => session[:ratings], :sort_by => session[:sort_by])
     elsif params[:ratings]
       @movies = Movie.where("rating = '#{p_rat.join("' OR rating = '")}'").order(params[:sort_by])
       p_rat.each { |x| @ratings_hash[x] = true }
       session[:ratings] = params[:ratings]
+      session.delete(:sort_by)
     elsif !session[:ratings] && !session[:sort_by]
       @movies = Movie.all 
       @ratings_hash.update(@ratings_hash) { |x, y| y = true }
