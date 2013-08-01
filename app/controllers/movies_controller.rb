@@ -71,7 +71,7 @@ if params ratings == nil
     elsif params[:ratings] == nil && params[:sort_by] == nil
       if session[:ratings] == nil && session[:sort_by] == nil
         @movies = Movie.all
-        @ratings_hash.update(@ratings_hash) { |x, y| y = true }
+        @ratings_hash.update(@ratings_hash) { true }
       else
         @movies = Movie.where("rating = '#{s_rat.join("' OR rating = '")}'").order(session[:sort_by])    
         s_rat.each { |x| @ratings_hash[x] = true }
@@ -80,7 +80,7 @@ if params ratings == nil
     elsif params[:sort_by]
       #redirect_to movies_path(:sort_by => params[:sort_by])
       @movies = Movie.order(params[:sort_by])
-      @ratings_hash.update(@ratings_hash) { |x, y| y = true }
+      @ratings_hash.update(@ratings_hash) { true }
       session[:sort_by] = params[:sort_by]
       session.delete(:ratings)
 
@@ -103,7 +103,7 @@ if params ratings == nil
   def create
     @movie = Movie.create!(params[:movie])
     flash[:notice] = "#{@movie.title} was successfully created."
-    redirect_to movies_path(:sort_by => session[:sort_by], :ratings => session[:ratings])
+    redirect_to movies_path
   end
 
   def edit
@@ -121,7 +121,7 @@ if params ratings == nil
     @movie = Movie.find(params[:id])
     @movie.destroy
     flash[:notice] = "Movie '#{@movie.title}' deleted."
-    redirect_to movies_path(:sort_by => session[:sort_by], :ratings => session[:ratings])
+    redirect_to movies_path #(:sort_by => session[:sort_by], :ratings => session[:ratings])
   end
 
 end
