@@ -12,9 +12,7 @@ class MoviesController < ApplicationController
     @all_ratings = Movie.all_ratings
     @ratings_hash = { "G" => false, "PG" => false, "PG-13" => false, "R" => false }
     # if( nothing set ) { set all true } else { do mapping }
-    
-    
-    
+     
 =begin
   
 if params has no rating or sorting and session is not nil
@@ -46,7 +44,6 @@ if params has nothing and session has nothing
       session[:ratings] = params[:ratings]
       
     elsif params[:ratings] == nil && params[:sort_by] == nil
-      
       if session[:ratings] == nil && session[:sort_by] == nil
         @movies = Movie.all
         @ratings_hash.update(@ratings_hash) { |x, y| y = true }
@@ -56,7 +53,7 @@ if params has nothing and session has nothing
       end
 
     elsif params[:sort_by]
-      @movies = Movie.order(params[:sort_by])
+      redirect_to movies_path(:sort_by => params[:sort_by])
       @ratings_hash.update(@ratings_hash) { |x, y| y = true }
       session[:sort_by] = params[:sort_by]
       session.delete(:ratings)
